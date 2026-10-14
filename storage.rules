@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    // Client-generated Firestore-style IDs; files are never overwritten.
+    function validId(id) { return id.matches('[A-Za-z0-9]{20}'); }
+    function validImage() {
+      return request.resource.size > 0
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+    // Profile photos are private to their owner until discovery is designed.
+    match /profilePhotos/{uid}/{photoId} {
+      allow get: if owner(uid);
+      allow create: if owner(uid) && resource == null && validId(photoId) && validImage();
+      allow delete: if owner(uid);
+    }
+    // Verification selfies are reviewed by administrators in the console and
+    // are never readable by any client, including their owner.
+    match /verificationSelfies/{uid}/{selfieId} {
+      allow create: if owner(uid) && resource == null && validId(selfieId) && validImage();
+      allow delete: if owner(uid);
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

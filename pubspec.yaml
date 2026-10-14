@@ -1,0 +1,92 @@
+name: shukaansi
+description: "Shukaansi — Halal • Serious • Together."
+publish_to: 'none'
+version: 0.12.0+16
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  # Runtime: keeps the native splash up until the first sign-in state is known.
+  flutter_native_splash: ^2.4.8
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  cupertino_icons: ^1.0.8
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  cloud_firestore: ^6.10.0
+  firebase_storage: ^13.6.0
+  image_picker: ^1.2.3
+  shared_preferences: ^2.5.5
+  share_plus: ^13.3.1
+  local_auth: ^3.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/branding/shukaansi_logo_transparent.png
+    - assets/branding/shukaansi_symbol_transparent.png
+    - assets/legal/
+    - assets/images/lifestyle/
+    - assets/fonts/plus_jakarta_sans/OFL.txt
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/plus_jakarta_sans/PlusJakartaSans-ExtraBold.ttf
+          weight: 800
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/app_icon_1024.png
+  # Android 8+ adaptive icon: the symbol on ivory, shaped by the launcher.
+  adaptive_icon_background: '#FEFEFC'
+  adaptive_icon_foreground: assets/branding/app_icon_foreground_1024.png
+  # The artwork is already padded; a small inset keeps the symbol a good size.
+  adaptive_icon_foreground_inset: 5
+  remove_alpha_ios: true
+  background_color_ios: '#FEFEFC'
+  web:
+    generate: true
+    image_path: assets/branding/app_icon_1024.png
+    background_color: '#FEFEFC'
+    theme_color: '#054744'
+
+# Ivory in light and dark mode (the logo's teal would vanish on dark). The
+# full logo is drawn 240dp wide, centred - the same size and place as the
+# app's own splash and loading screens, so the hand-over is seamless.
+# Android 12+ only allows an icon in a circle: the padded symbol.
+flutter_native_splash:
+  color: '#FEFEFC'
+  color_dark: '#FEFEFC'
+  image: assets/branding/splash_logo.png
+  image_dark: assets/branding/splash_logo.png
+  fullscreen: false
+  android: true
+  ios: true
+  web: true
+  android_12:
+    color: '#FEFEFC'
+    color_dark: '#FEFEFC'
+    image: assets/branding/app_icon_foreground_1024.png
+    image_dark: assets/branding/app_icon_foreground_1024.png
+    icon_background_color: '#FEFEFC'
+    icon_background_color_dark: '#FEFEFC'

@@ -1,0 +1,980 @@
+{
+    "@@locale": "en",
+    "authLoading": "Please wait…",
+    "authRejected": "Unable to complete this request. Check your details and try again.",
+    "authNetworkError": "Connection unavailable. Check your internet and try again.",
+    "authThrottled": "Too many attempts. Please wait before trying again.",
+    "authUnknownError": "Something went wrong. Please try again.",
+    "authRequestCompleted": "Account request completed.",
+    "appTitle": "Shukaansi",
+    "tagline": "Halal • Serious • Together",
+    "chooseLanguage": "Choose your language",
+    "chooseLanguageSomali": "Dooro luqaddaada",
+    "englishLanguage": "English",
+    "somaliLanguage": "Soomaali",
+    "welcomeTitle": "Assalamu alaikum, welcome to Shukaansi",
+    "selectedLanguage": "Language selected: English",
+    "getStarted": "Get Started",
+    "createAccount": "Create account",
+    "signIn": "Sign in",
+    "authIntroduction": "Your next step toward marriage",
+    "authPreviewNotice": "Account services are not available yet. These forms do not create an account or sign you in.",
+    "authUnavailable": "Account services are unavailable. Please try again later.",
+    "emailAddress": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "fieldRequired": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "passwordGuidance": "Use at least 6 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "alreadyHaveAccount": "Already have an account? Sign in",
+    "needAccount": "New to Shukaansi? Create an account",
+    "sessionFailed": "Unable to check your session.",
+    "retry": "Try again",
+    "accountSignedIn": "You are signed in",
+    "signOutFailed": "Unable to sign out. Please try again.",
+    "signOut": "Sign out",
+    "accountStageNotice": "Your account session is active. Profiles and introductions are not available yet. Signing in does not verify your identity.",
+    "forgotPassword": "Forgot password?",
+    "resetPasswordIntroduction": "Reset your password",
+    "sendResetLink": "Send reset link",
+    "backToSignIn": "Back to sign in",
+    "resetPasswordConfirmation": "If an account can receive a reset email at this address, a link will be sent. Check your inbox and spam folder, then return to sign in. The email may be in English.",
+    "profileAboutHint": "Describe what matters to you in marriage. Do not include contact details or sensitive private information.",
+    "profileAdultDeclaration": "I confirm that I am 18 or older.",
+    "profileFemale": "Woman",
+    "profileTextLength": "Enter between {min} and {max} characters.",
+    "profileLoading": "Checking your profile",
+    "profileDivorced": "Divorced",
+    "profileLocationNotice": "Enter your city only, not your street address.",
+    "profileReview": "Review your profile",
+    "profileSave": "Create profile",
+    "profileSaveFailed": "Your profile could not be saved. Your entries are still here. Check your connection and try again.",
+    "profileWidowed": "Widowed",
+    "profileMaritalStatus": "Marital status",
+    "profileAbout": "About you and your marriage intentions",
+    "profileStep": "Step {current} of {total}",
+    "profileCity": "City",
+    "profileNeverMarried": "Never married",
+    "profileGender": "Gender",
+    "profileBack": "Back",
+    "profilePrivacyNotice": "Build a respectful introduction. Your profile is private to you at this stage.",
+    "profileAdultRequired": "You must be 18 or older to create a Shukaansi profile.",
+    "profileName": "Profile name",
+    "profileCreated": "MashaAllah, your profile is saved",
+    "profileContinue": "Continue",
+    "profileMale": "Man",
+    "profileCreatedNotice": "Only you can view this profile for now. Introductions are not available yet. This does not verify your identity.",
+    "profileLoadFailed": "Your profile could not be loaded. Check your connection and try again. Profile services may not be available yet.",
+    "@profileStep": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "@profileTextLength": {
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "profileStepBasicsTitle": "Let's start with you",
+    "profileStepBasicsHint": "The essentials every introduction begins with.",
+    "profileStepRootsTitle": "Your roots",
+    "profileStepRootsHint": "Tell us where your family story begins.",
+    "profileStepHomeTitle": "Where you live today",
+    "profileStepPhoneTitle": "Your phone number",
+    "profileStepPhoneHint": "Private to you. It is never shown on your profile.",
+    "profileStepWorkTitle": "Work and study",
+    "profileStepWorkHint": "Share what you do and how far you have studied.",
+    "profileStepFaithTitle": "Faith and family",
+    "profileStepFaithHint": "There is no wrong answer. Honest answers help the right person find you.",
+    "profileStepIntentionsTitle": "Your marriage intentions",
+    "profileStepIntentionsHint": "Clear intentions make for respectful introductions.",
+    "profileStepAboutTitle": "In your own words",
+    "profileStepReviewHint": "Check your answers before saving.",
+    "profileUpdateNotice": "We have added new questions. Your earlier answers are already filled in.",
+    "profileUpdateSave": "Update profile",
+    "profileDateOfBirth": "Date of birth",
+    "profileDateOfBirthHint": "Private. Used to confirm you are 18 or older.",
+    "profileSelectDate": "Select your date of birth",
+    "profileNationality": "Nationality",
+    "profileResidence": "Country you live in",
+    "profileEthnicity": "Ethnicity",
+    "profileEthnicityOtherLabel": "Your ethnicity",
+    "profilePhone": "Phone number",
+    "profileCountryCode": "Country code",
+    "profilePhoneInvalid": "Enter a valid phone number without the country code.",
+    "profileProfession": "Profession",
+    "profileProfessionOtherLabel": "Your profession",
+    "profileEducation": "Highest education",
+    "profilePractice": "Your religious practice",
+    "profileTimeline": "When do you hope to marry?",
+    "profileRelocation": "Open to moving for marriage?",
+    "profileSearch": "Search",
+    "profileSuggested": "Common choices",
+    "profileAllOptions": "All options",
+    "profileNoResults": "No matches found",
+    "profileSelect": "Select",
+    "profileSectionPublic": "Your profile",
+    "profileSectionPrivate": "Private to you",
+    "profileSelected": "Selected",
+    "ethnicitySomali": "Somali Muslim",
+    "ethnicityArab": "Arab Muslim",
+    "ethnicityOther": "Other Muslim background",
+    "practiceStrict": "Very practising",
+    "practiceStrictInfo": "Prayer, fasting and Islamic guidance shape my daily life.",
+    "practiceActive": "Practising",
+    "practiceActiveInfo": "I make regular practice part of my routine where I can.",
+    "practiceGrowing": "Growing in faith",
+    "practiceGrowingInfo": "I am learning and working on becoming more consistent.",
+    "practiceCultural": "Culturally Muslim",
+    "practiceCulturalInfo": "Islam is part of my identity, though I practise less often.",
+    "timelineSoon": "As soon as the right person comes",
+    "timelineWithinYear": "Within a year",
+    "timelineOneToTwoYears": "In 1–2 years",
+    "timelineMoreThanTwoYears": "In more than 2 years",
+    "relocationYes": "Yes, I would relocate",
+    "relocationOpen": "Open to discussing it",
+    "relocationNo": "No, I plan to stay where I am",
+    "educationSecondary": "Secondary school",
+    "educationDiploma": "Diploma or vocational training",
+    "educationBachelors": "Bachelor's degree",
+    "educationMasters": "Master's degree",
+    "educationDoctorate": "Doctorate (PhD)",
+    "educationIslamicStudies": "Islamic studies qualification",
+    "optionOther": "Other",
+    "professionAccountant": "Accountant",
+    "professionArchitect": "Architect",
+    "professionBankingFinance": "Banking and finance",
+    "professionBusinessOwner": "Business owner",
+    "professionChef": "Chef or catering",
+    "professionCivilServant": "Civil servant",
+    "professionConstructionTrades": "Construction and trades",
+    "professionCustomerService": "Customer service",
+    "professionDentist": "Dentist",
+    "professionDesignerCreative": "Designer or creative",
+    "professionDoctor": "Doctor",
+    "professionDriverTransport": "Driver or transport",
+    "professionElectrician": "Electrician",
+    "professionEngineer": "Engineer",
+    "professionFarmerAgriculture": "Farming and agriculture",
+    "professionHealthcareAssistant": "Care or healthcare assistant",
+    "professionHomemaker": "Homemaker",
+    "professionHospitality": "Hospitality",
+    "professionHumanResources": "Human resources",
+    "professionImamIslamicScholar": "Imam or Islamic scholar",
+    "professionItSoftware": "IT and software",
+    "professionJournalistMedia": "Journalism and media",
+    "professionLawyer": "Lawyer",
+    "professionLecturer": "Lecturer or academic",
+    "professionLogistics": "Logistics and supply chain",
+    "professionMarketingSales": "Marketing and sales",
+    "professionMechanic": "Mechanic",
+    "professionMilitaryDefence": "Military and defence",
+    "professionNgoHumanitarian": "NGO or humanitarian work",
+    "professionNurse": "Nurse",
+    "professionPharmacist": "Pharmacist",
+    "professionPilotAviation": "Pilot or aviation",
+    "professionPoliceSecurity": "Police or security",
+    "professionProjectManager": "Project manager",
+    "professionPsychologistCounsellor": "Psychologist or counsellor",
+    "professionRealEstate": "Real estate",
+    "professionResearcherScientist": "Researcher or scientist",
+    "professionRetail": "Retail",
+    "professionSocialWorker": "Social worker",
+    "professionStudent": "Student",
+    "professionTeacher": "Teacher",
+    "professionTranslatorInterpreter": "Translator or interpreter",
+    "professionLookingForWork": "Looking for work",
+    "professionRetired": "Retired",
+    "profileEdit": "Edit profile",
+    "profileSaveChanges": "Save changes",
+    "profileCancelEdit": "Cancel",
+    "profileLockedNotice": "Gender and date of birth cannot be changed after your profile is created.",
+    "profileUpdated": "Alhamdulillah, your changes are saved.",
+    "emailVerifyTitle": "Verify your email",
+    "emailVerifyBody": "We sent a verification link to {email}. A verified email will be required before you can meet other members.",
+    "emailVerifyCheck": "I've verified it",
+    "emailVerifyResend": "Resend email",
+    "emailVerifySent": "Verification email sent. Check your inbox and spam folder.",
+    "emailVerifyNotYet": "Not verified yet. Open the link in the email, then try again.",
+    "emailVerified": "Email verified",
+    "accountActionFailed": "Something went wrong. Check your connection and try again.",
+    "accountDelete": "Delete account",
+    "accountDeleteTitle": "Delete your account",
+    "accountDeleteBody": "This permanently deletes your Shukaansi profile, your private details and your sign-in account. It cannot be undone.",
+    "accountDeletePassword": "Enter your password to confirm",
+    "accountDeleteConfirm": "I understand this is permanent",
+    "accountDeleteConfirmRequired": "Please confirm that you understand.",
+    "accountDeleteButton": "Delete my account permanently",
+    "accountDeleteWrongPassword": "That password is not correct.",
+    "accountDeleteFailed": "Your account could not be deleted. Nothing was removed. Check your connection and try again.",
+    "accountDeletePartial": "Your profile was deleted, but your sign-in account was not. Try again to finish.",
+    "@emailVerifyBody": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "photosTitle": "Your photos",
+    "photosHint": "Add up to 6 photos. Your first photo is your main photo. Only you can see them for now.",
+    "photosAdd": "Add photo",
+    "photosMain": "Main",
+    "photosMakeMain": "Make main photo",
+    "photosRemove": "Remove photo",
+    "photosView": "View photo",
+    "photosUploading": "Uploading photo",
+    "photosUploadFailed": "The photo could not be uploaded. Check your connection and try again.",
+    "photosUnsupported": "Choose a JPEG, PNG or WebP photo. Very large photos cannot be used.",
+    "photosUpdateFailed": "Your photos could not be updated. Try again.",
+    "photosLoadFailed": "Your photos could not be loaded.",
+    "photosPickFailed": "Your photos could not be opened. Check photo permission in your phone settings.",
+    "photosSlot": "Photo {number}",
+    "verifyTitle": "Get verified",
+    "verifyBody": "Take a selfie so our team can confirm you match your photos. Verified profiles earn more trust from members and their families.",
+    "verifyStart": "Start verification",
+    "verifyNeedsPhoto": "Add at least one photo first.",
+    "verifyPendingTitle": "Verification in review",
+    "verifyPendingBody": "Our team will review your selfie soon, InshaAllah. The result will appear here.",
+    "verifyVerified": "MashaAllah, your profile is verified",
+    "verifyRejectedTitle": "Verification not approved",
+    "verifyRejectedBody": "Your selfie could not be matched to your photos. Check the tips and try again.",
+    "verifyReviewNote": "Reviewer note: {note}",
+    "verifyScreenTitle": "Verify your profile",
+    "verifyTipsIntro": "For a quick review:",
+    "verifyTipLight": "Use good light and face the camera.",
+    "verifyTipFace": "Keep your face clearly visible, without sunglasses or filters.",
+    "verifyTipPrivate": "Your selfie is private. Only our review team sees it, and it is never shown on your profile.",
+    "verifyTakeSelfie": "Take selfie",
+    "verifyRetake": "Retake",
+    "verifySubmit": "Submit for review",
+    "verifySubmitting": "Sending your selfie",
+    "verifySubmitFailed": "Your selfie could not be sent. Check your connection and try again.",
+    "verifyCameraFailed": "The camera could not be opened. Check camera permission in your phone settings.",
+    "verifySelfiePreview": "Your selfie",
+    "@photosSlot": {
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "@verifyReviewNote": {
+        "placeholders": {
+            "note": {
+                "type": "String"
+            }
+        }
+    },
+    "photosResetTitle": "Reset verification?",
+    "photosResetBody": "Your verification is linked to your main photo. Changing your main photo resets it, and you will need to take a new selfie to be verified again.",
+    "photosResetConfirm": "Change photo",
+    "verifyTipNiqab": "If you wear a niqab, please remove it for this selfie only. Your face must be visible for verification. The selfie stays private and is seen only by our review team.",
+    "navDiscover": "Discover",
+    "navProfile": "My profile",
+    "discoverNotListedTitle": "Get ready to be discovered",
+    "discoverNotListedBody": "Complete these steps to appear in Discover and to see other members.",
+    "discoverNeedEmail": "Verify your email address",
+    "discoverNeedPhoto": "Add at least one profile photo",
+    "discoverGoToProfile": "Go to my profile",
+    "discoverCheckAgain": "Check again",
+    "discoverEmpty": "No profiles match yet. Try widening your filters or check back soon, InshaAllah.",
+    "discoverLoadFailed": "Profiles could not be loaded. Check your connection and try again.",
+    "discoverFilters": "Filters",
+    "discoverAgeRange": "Age {min} to {max}",
+    "discoverAnyCountry": "Any country",
+    "discoverCountry": "Country they live in",
+    "discoverApply": "Show profiles",
+    "discoverReset": "Reset",
+    "cardNameAge": "{name}, {age}",
+    "cardLocation": "{city}, {country}",
+    "verifiedBadge": "Verified profile",
+    "photoOf": "Photo {current} of {total}",
+    "photosPrivateTitle": "Photos are private",
+    "photosPrivateBody": "She shares her photos with members she approves.",
+    "photosRequest": "Request photos",
+    "photosRequested": "Request sent",
+    "photosCancelRequest": "Cancel request",
+    "photosRequestFailed": "Your request could not be sent. Try again.",
+    "blurTitle": "Blur my photos in Discover",
+    "blurBody": "Members see a blurred version until you approve their request.",
+    "blurFailed": "Your photo privacy could not be changed. Try again.",
+    "requestsTitle": "Photo requests",
+    "requestsEmpty": "No requests right now.",
+    "requestsApprove": "Approve",
+    "requestsDecline": "Decline",
+    "viewersTitle": "Can see your photos",
+    "viewersRemove": "Remove",
+    "requestsLoadFailed": "Requests could not be loaded.",
+    "@discoverAgeRange": {
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "@cardNameAge": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "age": {
+                "type": "int"
+            }
+        }
+    },
+    "@cardLocation": {
+        "placeholders": {
+            "city": {
+                "type": "String"
+            },
+            "country": {
+                "type": "String"
+            }
+        }
+    },
+    "@photoOf": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "filterPractice": "Religious practice",
+    "reportAction": "Report",
+    "blockAction": "Block",
+    "cardMoreActions": "More options for {name}",
+    "reportTitle": "Report {name}",
+    "reportBody": "Tell us what is wrong. Reports are confidential: {name} will not know who reported them.",
+    "reportReasonFakeProfile": "Fake profile or impersonation",
+    "reportReasonInappropriatePhotos": "Inappropriate photos",
+    "reportReasonHarassment": "Harassment or disrespect",
+    "reportReasonScam": "Scam or asking for money",
+    "reportReasonUnderage": "May be under 18",
+    "reportReasonNotSerious": "Not serious about marriage",
+    "reportReasonOther": "Something else",
+    "reportNote": "Details (optional)",
+    "reportAlsoBlock": "Also block {name}",
+    "reportSubmit": "Send report",
+    "reportSent": "JazakAllahu khayran. Our team will review your report.",
+    "reportFailed": "Your report could not be sent. Try again.",
+    "blockTitle": "Block {name}?",
+    "blockBody": "You will no longer see each other in Discover, and photo permissions between you end. They are not told.",
+    "blockFailed": "Could not block. Try again.",
+    "blockedTitle": "Blocked members",
+    "unblockAction": "Unblock",
+    "suspendedTitle": "Your account is suspended",
+    "suspendedBody": "You cannot use Shukaansi while your account is suspended.",
+    "suspendedReason": "Reason: {reason}",
+    "suspendedContact": "To appeal, contact {email}.",
+    "@cardMoreActions": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "@reportTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "@reportBody": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "@reportAlsoBlock": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "@blockTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "@suspendedReason": {
+        "placeholders": {
+            "reason": {
+                "type": "String"
+            }
+        }
+    },
+    "@suspendedContact": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "stepsDone": "{done} of {total} complete",
+    "photosCount": "{count} of {max} added",
+    "verifyStatusNotStarted": "Not started",
+    "verifyStatusPending": "In review",
+    "verifyStatusRejected": "Not approved",
+    "@stepsDone": {
+        "placeholders": {
+            "done": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "@photosCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "navLikes": "Likes",
+    "navMatches": "Matches",
+    "navChats": "Chats",
+    "matchesSoonBody": "When two members show interest in each other, it becomes a match. Your matches will appear here.",
+    "browseDiscover": "Browse Discover",
+    "settingsLanguage": "Language",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "legalTitle": "Before you continue",
+    "legalBody": "Please read our Terms of Use and Privacy Policy. They follow Islamic manners and explain how we protect your information.",
+    "legalTermsPoint": "Seeking marriage with honesty, modesty and respect.",
+    "legalPrivacyPoint": "Your data is never sold or shared with advertisers.",
+    "legalAgree": "I have read and agree to the Terms of Use and Privacy Policy.",
+    "legalContinue": "Agree and continue",
+    "legalSaveFailed": "We couldn't save your agreement. Check your connection and try again.",
+    "legalCheckFailed": "We couldn't check your account. Check your connection and try again.",
+    "legalLoadFailed": "This document couldn't be opened.",
+    "verifyStepPhoto": "Photo",
+    "verifyStepSelfie": "Selfie",
+    "verifyStepReview": "Review",
+    "stepStateDone": "done",
+    "stepStateCurrent": "in progress",
+    "stepStateUpcoming": "next",
+    "verifyHeadline": "Confirm it's you",
+    "verifyIntro": "Take a quick selfie so our team can compare it with your main photo.",
+    "verifyPrivateTitle": "Private and secure",
+    "verifyCareTitle": "Reviewed with care",
+    "verifyCareBody": "We use it only to confirm that it's really you.",
+    "verifyCheckHeadline": "Check your selfie",
+    "verifyCheckBody": "Make sure your face is clear and well lit, then send it for review.",
+    "verifySubmittedChip": "Selfie submitted",
+    "verifySubmittedTitle": "Your verification is in review",
+    "verifySubmittedBody": "JazakAllahu khayran. Our team will compare your selfie with your main photo and let you know here, InshaAllah.",
+    "reviewStepProfile": "Profile completed",
+    "reviewStepProfileBody": "Your details and photos are saved.",
+    "reviewStepReview": "Verification review",
+    "reviewStepReviewBody": "Our team checks every selfie by hand.",
+    "reviewStepBadge": "Verified badge",
+    "reviewStepBadgeBody": "Once approved, your profile shows the blue verified badge, InshaAllah.",
+    "verifyContinue": "Continue to Shukaansi",
+    "likeAction": "Show interest",
+    "withdrawInterest": "Withdraw interest",
+    "matchedLabel": "Matched",
+    "likeSent": "Alhamdulillah, your interest was sent to {name}.",
+    "@likeSent": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "interestFailed": "That didn't work. Check your connection and try again.",
+    "matchTitle": "MashaAllah, it's a match!",
+    "matchBody": "You and {name} have both shown interest. May Allah put khayr in it.",
+    "@matchBody": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "matchPhotosNote": "You can now see each other's photos.",
+    "matchMessagingSoon": "Messaging opens soon, InshaAllah.",
+    "viewMatches": "View matches",
+    "keepBrowsing": "Keep browsing",
+    "likesReceivedTab": "Liked you",
+    "likesSentTab": "You liked",
+    "likesReceivedEmpty": "No one has shown interest yet. Keep your profile complete and check back soon, InshaAllah.",
+    "likesSentEmpty": "You haven't shown interest in anyone yet. Tap the heart on a profile in Discover.",
+    "likeBack": "Like back",
+    "declineInterest": "Not for me",
+    "likesLoadFailed": "Likes could not be loaded.",
+    "matchesEmptyTitle": "No matches yet",
+    "matchesLoadFailed": "Matches could not be loaded.",
+    "unmatch": "Unmatch",
+    "unmatchTitle": "Unmatch {name}?",
+    "@unmatchTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "unmatchBody": "You will no longer be matched and photo sharing between you ends. You would both need to show interest again to match.",
+    "viewProfile": "View profile",
+    "likesNewCount": "{count} new",
+    "@likesNewCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "discoverForYou": "For you",
+    "discoverNewMembers": "New members",
+    "forYouSubtitle": "Members who suit your partner preferences.",
+    "newMembersSubtitle": "The newest members, most recent first.",
+    "forYouSetupTitle": "Tell us who you're looking for",
+    "forYouSetupBody": "Set your partner preferences and we'll show you members who suit them, InshaAllah.",
+    "setPreferences": "Set preferences",
+    "partnerPreferences": "Partner preferences",
+    "prefCountries": "Countries they live in",
+    "prefCountriesHint": "Leave empty for any country. Choose up to 10.",
+    "prefAddCountry": "Add country",
+    "prefRemoveCountry": "Remove {country}",
+    "@prefRemoveCountry": {
+        "placeholders": {
+            "country": {
+                "type": "String"
+            }
+        }
+    },
+    "prefSave": "Save preferences",
+    "prefSaved": "Alhamdulillah, your preferences are saved.",
+    "prefSaveFailed": "Your preferences could not be saved. Try again.",
+    "prefNotSet": "Not set yet",
+    "prefAges": "Ages {min}–{max}",
+    "@prefAges": {
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "prefCountryCount": "{count, plural, =1{1 country} other{{count} countries}}",
+    "@prefCountryCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "prefAnyAnswer": "Any",
+    "roleTitle": "How will you use Shukaansi?",
+    "roleMember": "I'm looking for a spouse",
+    "roleMemberBody": "Create your profile and meet Muslims seeking marriage.",
+    "roleWali": "I'm a Wali",
+    "roleWaliBody": "A family member invited you to approve their matches.",
+    "waliSetupTitle": "Join as a Wali",
+    "waliSetupBody": "Enter your name and the code your family member shared with you.",
+    "waliYourName": "Your name",
+    "waliCode": "Invite code",
+    "waliJoin": "Join",
+    "waliCodeInvalid": "This code isn't valid or has expired. Ask for a new one.",
+    "waliHomeTitle": "Wali",
+    "waliGreeting": "Assalamu alaikum, {name}",
+    "@waliGreeting": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliGuarding": "You are the Wali for {names}.",
+    "@waliGuarding": {
+        "placeholders": {
+            "names": {
+                "type": "String"
+            }
+        }
+    },
+    "waliNoMembers": "You aren't the Wali for anyone yet. Ask your family member for an invite code.",
+    "waliAddMember": "Enter another code",
+    "waliRequestsTitle": "Match requests",
+    "waliNoRequests": "No match requests yet. You'll be asked here when there is a new match, InshaAllah.",
+    "waliRequestFor": "Match for {name}",
+    "@waliRequestFor": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliApprove": "Approve",
+    "waliDecline": "Decline",
+    "waliApproved": "MashaAllah, you approved this match. May Allah make it a blessing.",
+    "waliDeclined": "You declined this match.",
+    "waliDeclineTitle": "Decline this match?",
+    "waliDeclineBody": "Both members will see that the match was declined, and they will not be able to message each other.",
+    "waliStatusApproved": "Approved",
+    "waliStatusDeclined": "Declined",
+    "waliStatusWaiting": "Waiting for you",
+    "waliStop": "Stop being Wali for {name}",
+    "@waliStop": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliStopTitle": "Stop being Wali for {name}?",
+    "@waliStopTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliStopBody": "{name} will need to invite a new Wali.",
+    "@waliStopBody": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliPhotosNote": "Photos are shared only between the two members.",
+    "waliLoadFailed": "This couldn't be loaded.",
+    "waliCardTitle": "Your Wali",
+    "waliRequiredBody": "Required for sisters: your matches can message only after your Wali approves.",
+    "waliOptionalBody": "Optional: add a Wali to approve your matches before messaging.",
+    "waliRequiredChip": "Required",
+    "waliInvite": "Invite your Wali",
+    "waliInviteCode": "Invite code",
+    "waliInviteExpires": "Valid until {date}",
+    "@waliInviteExpires": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "waliShareCode": "Share code",
+    "waliCopyCode": "Copy code",
+    "waliCopied": "Code copied",
+    "waliNewCode": "New code",
+    "waliShareMessage": "Assalamu alaikum. Please be my Wali on Shukaansi. Install the app, choose \"I'm a Wali\" and enter this code: {code}. It is valid for 7 days.",
+    "@waliShareMessage": {
+        "placeholders": {
+            "code": {
+                "type": "String"
+            }
+        }
+    },
+    "waliLinked": "{name} is your Wali",
+    "@waliLinked": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliLinkedBody": "Your Wali approves your matches before you can message.",
+    "waliRemove": "Remove Wali",
+    "waliRemoveTitle": "Remove {name} as your Wali?",
+    "@waliRemoveTitle": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "waliRemoveBody": "Their approvals are cleared, and a new Wali will need to approve your matches again.",
+    "approvalNeedsWali": "Add your Wali to continue",
+    "approvalWaitingYours": "Waiting for your Wali's approval",
+    "approvalWaitingTheirs": "Waiting for their Wali's approval",
+    "approvalDeclined": "A Wali declined this match",
+    "chatsActive": "Conversations",
+    "chatsNewMatches": "New matches",
+    "chatsNewMatchesBody": "Say salaam and start a respectful conversation.",
+    "chatsEmptyTitle": "No conversations yet",
+    "chatsEmptyBody": "When you both show interest, your match will appear here, InshaAllah.",
+    "viewMatchesAction": "View matches",
+    "chatsLoadFailed": "Conversations could not be loaded.",
+    "messageAction": "Message",
+    "messageHint": "Write a message",
+    "messageSend": "Send",
+    "messageSendFailed": "Your message could not be sent. Try again.",
+    "chatStarterTitle": "Begin with salaam",
+    "chatStarterBody": "Keep the conversation respectful and focused on marriage. Involve your families when the time is right.",
+    "chatStarterSalaam": "Assalamu alaikum",
+    "chatLocked": "Messaging opens once the required Wali approval is given.",
+    "chatYesterday": "Yesterday",
+    "chatUnread": "New message",
+    "chatYou": "You: {text}",
+    "@chatYou": {
+        "placeholders": {
+            "text": {
+                "type": "String"
+            }
+        }
+    },
+    "chatsUnreadCount": "{count} unread",
+    "@chatsUnreadCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "messageFromYou": "You said",
+    "messageFrom": "{name} said",
+    "@messageFrom": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityTitle": "Notifications",
+    "activityEmpty": "You're all caught up. New interest, matches and messages will appear here, InshaAllah.",
+    "activityOpenOnly": "Alerts appear while Shukaansi is open. Phone notifications when the app is closed are coming soon.",
+    "activityLiked": "{name} showed interest in you",
+    "@activityLiked": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityMatched": "MashaAllah, you matched with {name}",
+    "@activityMatched": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityYourWaliApproved": "Your Wali approved your match with {name}",
+    "@activityYourWaliApproved": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityYourWaliDeclined": "Your Wali declined your match with {name}",
+    "@activityYourWaliDeclined": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityTheirWaliApproved": "{name}'s Wali approved your match. You can now message, InshaAllah.",
+    "@activityTheirWaliApproved": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityTheirWaliDeclined": "{name}'s Wali declined the match",
+    "@activityTheirWaliDeclined": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityMessage": "New message from {name}",
+    "@activityMessage": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "activityView": "View",
+    "activityNew": "New",
+    "mutualTitle": "MashaAllah, you both like each other",
+    "mutualBody": "A match needs Premium on either side. When either of you upgrades, the match is made, InshaAllah.",
+    "mutualNeedsPremium": "You both like each other: Premium needed to match",
+    "viewPlans": "View plans",
+    "plansTitle": "Choose your plan",
+    "planFree": "Free",
+    "planPremium": "Premium",
+    "planVip": "VIP",
+    "planHeadlineFree": "Begin your search",
+    "planHeadlinePremium": "Meet with more choice",
+    "planHeadlineVip": "Be seen first",
+    "planSubFree": "Everything you need to start, at no cost.",
+    "planSubPremium": "Match with anyone you both like, and message your matches.",
+    "planSubVip": "Everything in Premium, with priority placement in Discover.",
+    "featureProfile": "Create your profile and get verified",
+    "featureBrowse": "Browse Discover and show interest",
+    "featureMatchPremium": "Match with members who have Premium",
+    "featureMatchAnyone": "Match with anyone you both like",
+    "featureMessage": "Message your matches, with Wali approval",
+    "featurePriority": "Shown first in Discover",
+    "featureEverythingPremium": "Everything in Premium",
+    "perMonth": "/ month",
+    "planCancelAnytime": "Cancel anytime.",
+    "planContinue": "Continue with {plan}",
+    "@planContinue": {
+        "placeholders": {
+            "plan": {
+                "type": "String"
+            }
+        }
+    },
+    "planCurrent": "Your current plan",
+    "planComingSoonTitle": "Coming soon, InshaAllah",
+    "planComingSoonBody": "Subscriptions through Google Play are on the way. Until then, our team can add Premium or VIP to your account.",
+    "planRenewNote": "When available, subscriptions renew automatically unless cancelled.",
+    "compareAllPlans": "Compare all plans",
+    "membershipTitle": "My membership",
+    "membershipFreeBody": "Explore Shukaansi with essential features.",
+    "membershipActive": "{plan} until {date}",
+    "@membershipActive": {
+        "placeholders": {
+            "plan": {
+                "type": "String"
+            },
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "previewBadge": "Preview · fictional profiles",
+    "previewScenarios": "Preview scenarios",
+    "previewScenariosBody": "Everything here is simulated on this device. Nothing is sent to Shukaansi.",
+    "scenarioPopulated": "Members to discover",
+    "scenarioPrefsNotSet": "Preferences not set",
+    "scenarioNoMatches": "No matching profiles",
+    "scenarioLoading": "Loading",
+    "scenarioNetworkError": "Network failure",
+    "scenarioIncomplete": "Incomplete profile",
+    "scenarioAwaitingReview": "Verification in review",
+    "scenarioEmptyActivity": "No likes or conversations",
+    "previewSimulatePremium": "Simulate Premium for this account",
+    "previewNotAvailable": "This action isn't available in the preview.",
+    "previewDisabledTitle": "Preview is turned off",
+    "previewDisabledBody": "Run a debug or profile build with --dart-define=SHUKAANSI_PREVIEW=true.",
+    "photoVerified": "Photo verified",
+    "photoVerifiedInfo": "Our team compared a private selfie with this member's photos. It does not confirm identity documents.",
+    "aboutName": "About {name}",
+    "@aboutName": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "marriagePlans": "Marriage plans: {timeline}",
+    "@marriagePlans": {
+        "placeholders": {
+            "timeline": {
+                "type": "String"
+            }
+        }
+    },
+    "sectionBackground": "Background",
+    "factLivesIn": "Lives in",
+    "factPractice": "Religious practice",
+    "factRelocation": "Open to relocating",
+    "conceptLabel": "Concept",
+    "interestsTitle": "Interests",
+    "photoLoadFailed": "This photo couldn't load.",
+    "closePhoto": "Close photo",
+    "openPhoto": "Open photo {current} of {total}",
+    "@openPhoto": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "passAction": "Pass",
+    "passedName": "You passed on {name}",
+    "@passedName": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "undoAction": "Undo",
+    "seenEveryoneTitle": "You've seen everyone for now",
+    "seenEveryoneBody": "New members join regularly. Check again later, InshaAllah.",
+    "noMatchesTitle": "No members match your preferences",
+    "noMatchesBody": "Try a wider age range or more countries.",
+    "adjustPreferences": "Adjust preferences",
+    "networkErrorTitle": "Couldn't connect",
+    "networkErrorBody": "Check your internet connection and try again.",
+    "newMembersEmpty": "No new members yet. Check again soon, InshaAllah.",
+    "likeStatusLikesYou": "Likes you",
+    "likeStatusWaiting": "Waiting for a reply",
+    "likeStatusMutual": "You both like each other",
+    "profileProgressTitle": "Your progress",
+    "progressAccount": "Account",
+    "progressAccountTodo": "Verify your email",
+    "progressProfile": "Profile",
+    "progressVisible": "Visible in Discover",
+    "progressAddPhoto": "Add a photo to appear in Discover",
+    "progressVerification": "Photo verification",
+    "verifyStatusVerified": "Verified",
+    "previewProfile": "Preview profile",
+    "managePhotos": "Manage photos",
+    "settingsTitle": "Settings",
+    "yourPlans": "Plans and preferences",
+    "profilePrivateDetails": "All your answers, including private details",
+    "chatsStartHint": "Tap a new match to see their profile and say salaam.",
+    "loadingSlow": "Taking longer than usual?",
+    "profileComplete": "{percent}% complete",
+    "@profileComplete": {
+        "placeholders": {
+            "percent": {"type": "int"}
+        }
+    },
+    "verifyNudgeTitle": "Verify your photo to get more trust",
+    "verifyNudgeBody": "Members and families trust verified profiles more. It only takes a quick selfie.",
+    "appLockTitle": "Unlock with fingerprint, face or PIN",
+    "appLockSubtitle": "Asks when Shukaansi opens, or after 5 minutes away",
+    "appLockReason": "Unlock Shukaansi",
+    "appLockEnableReason": "Confirm it's you to turn on app lock",
+    "appLockOn": "MashaAllah, app lock is on",
+    "appLockUnavailable": "Set up a fingerprint, face or screen lock on your phone first.",
+    "lockedTitle": "Shukaansi is locked",
+    "lockedBody": "Use your fingerprint, face or phone PIN to continue.",
+    "unlockAction": "Unlock",
+    "unlockFailed": "Could not unlock. Try again."
+}

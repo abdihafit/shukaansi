@@ -1,0 +1,572 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+
+    // ---- Staff -----------------------------------------------------------
+    // admins/{uid} is created by the project owner in the Firebase console:
+    // {role: 'admin' | 'reviewer' | 'moderator', reviewGender?: 'female' | 'male'}.
+    function staffPath() { return /databases/$(database)/documents/admins/$(request.auth.uid); }
+    function isStaff() { return request.auth != null && exists(staffPath()); }
+    function hasRole(roles) { return isStaff() && get(staffPath()).data.role in roles; }
+    function moderates() { return hasRole(['admin', 'moderator']); }
+    // Reviewers may be limited to one gender, e.g. women review women.
+    function reviewsAll() {
+      return hasRole(['admin'])
+        || (hasRole(['reviewer']) && !('reviewGender' in get(staffPath()).data));
+    }
+    function reviewsGender(gender) {
+      return reviewsAll()
+        || (hasRole(['reviewer']) && get(staffPath()).data.reviewGender == gender);
+    }
+    function reviewsMember(uid) {
+      return isStaff()
+        && reviewsGender(get(/databases/$(database)/documents/profiles/$(uid)).data.gender);
+    }
+    function staffSees(uid) { return moderates() || reviewsMember(uid); }
+    function suspended(uid) {
+      return exists(/databases/$(database)/documents/accountStatus/$(uid))
+        && get(/databases/$(database)/documents/accountStatus/$(uid)).data.status == 'suspended';
+    }
+    function blockedEitherWay(a, b) {
+      return exists(/databases/$(database)/documents/blocks/$(a + '_' + b))
+        || exists(/databases/$(database)/documents/blocks/$(b + '_' + a));
+    }
+    function text(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max
+        && value.matches('\\S([\\s\\S]*\\S)?');
+    }
+    function countryCode(value) { return value is string && value.matches('[A-Z]{2}'); }
+    // "Other" answers carry a short description; every other answer carries none.
+    function other(isOther, value) { return isOther ? text(value, 2, 40) : value == ''; }
+    function validProfile(d) {
+      return d.keys().hasAll(['schemaVersion','name','gender','nationality','residenceCountry','city','ethnicity','ethnicityOther','profession','professionOther','education','practice','marriageTimeline','relocation','maritalStatus','about','onboardingComplete','createdAt','updatedAt'])
+        && d.keys().hasOnly(['schemaVersion','name','gender','nationality','residenceCountry','city','ethnicity','ethnicityOther','profession','professionOther','education','practice','marriageTimeline','relocation','maritalStatus','about','onboardingComplete','createdAt','updatedAt'])
+        && d.schemaVersion == 2 && d.onboardingComplete == true
+        && text(d.name, 2, 50) && text(d.city, 2, 56) && text(d.about, 20, 500)
+        && countryCode(d.nationality) && countryCode(d.residenceCountry)
+        && d.gender in ['male','female'] && d.maritalStatus in ['neverMarried','divorced','widowed']
+        && d.ethnicity in ['somali','arab','other'] && other(d.ethnicity == 'other', d.ethnicityOther)
+        && d.profession is string && d.profession.matches('[a-z][A-Za-z]{1,39}')
+        && other(d.profession == 'other', d.professionOther)
+        && d.education in ['secondary','diploma','bachelors','masters','doctorate','islamicStudies','other']
+        && d.practice in ['strict','active','growing','cultural']
+        && d.marriageTimeline in ['soon','withinYear','oneToTwoYears','moreThanTwoYears']
+        && d.relocation in ['yes','open','no']
+        && d.createdAt is timestamp && d.updatedAt == request.time;
+    }
+    // Birth date is self-declared: at least 18 years (6574 days) and at most 120 years ago.
+    function validAccount(d) {
+      return d.keys().hasAll(['schemaVersion','adultConfirmed','birthDate','phoneCountry','phoneNumber','createdAt','updatedAt'])
+        && d.keys().hasOnly(['schemaVersion','adultConfirmed','birthDate','phoneCountry','phoneNumber','createdAt','updatedAt'])
+        && d.schemaVersion == 2 && d.adultConfirmed == true
+        && d.birthDate is timestamp
+        && d.birthDate <= request.time - duration.value(6574, 'd')
+        && d.birthDate >= request.time - duration.value(43830, 'd')
+        && countryCode(d.phoneCountry)
+        && d.phoneNumber is string && d.phoneNumber.matches('\\+[1-9][0-9]{6,14}')
+        && d.createdAt is timestamp && d.updatedAt == request.time;
+    }
+    function profileAfter(uid) { return getAfter(/databases/$(database)/documents/profiles/$(uid)).data; }
+    function accountAfter(uid) { return getAfter(/databases/$(database)/documents/privateAccounts/$(uid)).data; }
+    // Both documents must be written together and be valid afterwards.
+    function validPair(uid) { return validProfile(profileAfter(uid)) && validAccount(accountAfter(uid)); }
+    function created() { return request.resource.data.createdAt == request.time; }
+    // Updates: a v1 pair upgrading to v2, or the owner editing a v2 pair.
+    // Creation time never changes; gender and birth date are locked once on v2.
+    function edit(lockedField) {
+      return resource.data.schemaVersion in [1, 2]
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (resource.data.schemaVersion == 1
+          || request.resource.data[lockedField] == resource.data[lockedField]);
+    }
+    // Deleting is allowed only when the other document is removed in the same write.
+    function bothGone(uid) {
+      return !existsAfter(/databases/$(database)/documents/profiles/$(uid))
+        && !existsAfter(/databases/$(database)/documents/privateAccounts/$(uid));
+    }
+    match /profiles/{uid} {
+      allow get: if owner(uid) || staffSees(uid);
+      allow list: if moderates();
+      allow create: if owner(uid) && created() && validPair(uid);
+      // Edits remove the public listing in the same write; it is re-created
+      // from the new answers, so it can never show stale information.
+      allow update: if owner(uid) && edit('gender') && validPair(uid) && !listedAfter(uid);
+      allow delete: if owner(uid) && bothGone(uid);
+    }
+    match /privateAccounts/{uid} {
+      allow get: if owner(uid) || hasRole(['admin']);
+      allow create: if owner(uid) && created() && validPair(uid);
+      allow update: if owner(uid) && edit('birthDate') && validPair(uid);
+      allow delete: if owner(uid) && bothGone(uid);
+    }
+    // Which version of the Terms of Use and Privacy Policy the member
+    // accepted. Versions only move forward; the time is the server's.
+    function validConsent(d) {
+      return d.keys().hasAll(['schemaVersion','legalVersion','acceptedAt'])
+        && d.keys().hasOnly(['schemaVersion','legalVersion','acceptedAt'])
+        && d.schemaVersion == 1
+        && d.legalVersion is int && d.legalVersion >= 1
+        && d.acceptedAt == request.time;
+    }
+    match /consents/{uid} {
+      allow get: if owner(uid) || hasRole(['admin']);
+      allow create: if owner(uid) && validConsent(request.resource.data);
+      allow update: if owner(uid) && validConsent(request.resource.data)
+        && request.resource.data.legalVersion >= resource.data.legalVersion;
+      allow delete: if owner(uid);
+    }
+    function mediaId(value) { return value is string && value.matches('[A-Za-z0-9]{20}'); }
+    // Rules cannot loop, so each of the at most six slots is checked explicitly.
+    function slot(ids, i) { return ids.size() <= i || mediaId(ids[i]); }
+    function mainPhoto(ids) { return ids.size() > 0 ? ids[0] : ''; }
+    // `blurred` (women only) hides photos from viewers she has not approved.
+    function validPhotos(d, uid) {
+      return d.keys().hasAll(['schemaVersion','photoIds','updatedAt'])
+        && d.keys().hasOnly(['schemaVersion','photoIds','updatedAt','blurred'])
+        && (!('blurred' in d) || d.blurred == false
+          || (d.blurred == true && get(/databases/$(database)/documents/profiles/$(uid)).data.gender == 'female'))
+        && d.schemaVersion == 1 && d.photoIds is list && d.photoIds.size() <= 6
+        && d.photoIds.toSet().size() == d.photoIds.size()
+        && slot(d.photoIds, 0) && slot(d.photoIds, 1) && slot(d.photoIds, 2)
+        && slot(d.photoIds, 3) && slot(d.photoIds, 4) && slot(d.photoIds, 5)
+        && d.updatedAt == request.time;
+    }
+    // Photo order only; the image files live in Storage under the same IDs.
+    match /profilePhotos/{uid} {
+      allow get: if owner(uid) || staffSees(uid);
+      allow create: if owner(uid) && validPhotos(request.resource.data, uid)
+        && exists(/databases/$(database)/documents/profiles/$(uid)) && !listedAfter(uid);
+      // Verification is tied to the main photo: changing it must delete the
+      // verification record in the same write.
+      allow update: if owner(uid) && validPhotos(request.resource.data, uid)
+        && exists(/databases/$(database)/documents/profiles/$(uid)) && !listedAfter(uid)
+        && (mainPhoto(request.resource.data.photoIds) == mainPhoto(resource.data.photoIds)
+          || !existsAfter(/databases/$(database)/documents/verifications/$(uid)));
+      allow delete: if owner(uid);
+    }
+    // Owners may only submit (or resubmit after rejection) a pending request.
+    // Administrators set verified/rejected, reviewNote and reviewedAt outside
+    // client rules, so ordinary users can never mark themselves verified.
+    function validSubmission(d, uid) {
+      return d.keys().hasAll(['schemaVersion','status','selfieId','gender','submittedAt'])
+        && d.keys().hasOnly(['schemaVersion','status','selfieId','gender','submittedAt'])
+        && d.schemaVersion == 1 && d.status == 'pending' && mediaId(d.selfieId)
+        && d.gender == get(/databases/$(database)/documents/profiles/$(uid)).data.gender
+        && d.submittedAt == request.time
+        && get(/databases/$(database)/documents/profilePhotos/$(uid)).data.photoIds.size() > 0;
+    }
+    // A reviewer's decision changes only the decision fields.
+    function validDecision(d, old) {
+      return d.diff(old).affectedKeys().hasOnly(['status','reviewNote','reviewedAt','reviewedBy'])
+        && d.status in ['verified','rejected']
+        && d.reviewedAt == request.time && d.reviewedBy == request.auth.uid
+        && (!('reviewNote' in d) || (d.reviewNote is string && d.reviewNote.size() <= 300));
+    }
+    match /verifications/{uid} {
+      allow get: if owner(uid) || reviewsMember(uid);
+      // Gender-limited reviewers must filter their queue by gender.
+      allow list: if reviewsGender(resource.data.gender);
+      allow create: if owner(uid) && validSubmission(request.resource.data, uid);
+      allow update: if (owner(uid) && resource.data.status == 'rejected'
+          && validSubmission(request.resource.data, uid))
+        || (reviewsMember(uid) && validDecision(request.resource.data, resource.data));
+      allow delete: if owner(uid);
+    }
+    // Image bytes on the free plan: one document per image, 900 KB at most.
+    function validImageFile(d, maxBytes) {
+      return d.keys().hasAll(['schemaVersion','contentType','data','createdAt'])
+        && d.keys().hasOnly(['schemaVersion','contentType','data','createdAt'])
+        && d.schemaVersion == 1
+        && d.contentType in ['image/jpeg','image/png','image/webp']
+        && d.data is bytes && d.data.size() > 0 && d.data.size() <= maxBytes
+        && d.createdAt == request.time;
+    }
+    // Create-only (no update rule), so files are never overwritten.
+    match /profilePhotoFiles/{uid}/items/{photoId} {
+      allow get: if owner(uid) || canSeePhotos(uid) || staffSees(uid);
+      allow create: if owner(uid) && mediaId(photoId) && validImageFile(request.resource.data, 900 * 1024);
+      allow delete: if owner(uid);
+    }
+    // Selfies are never readable by clients; reviewers use the console.
+    match /verificationSelfieFiles/{uid}/items/{selfieId} {
+      allow get: if reviewsMember(uid);
+      allow create: if owner(uid) && mediaId(selfieId) && validImageFile(request.resource.data, 900 * 1024);
+      allow delete: if owner(uid);
+    }
+    // Tiny pre-blurred copies shown to viewers who may not see the original.
+    match /profilePhotoBlurFiles/{uid}/items/{photoId} {
+      allow get: if owner(uid) || canView(uid);
+      allow create: if owner(uid) && mediaId(photoId) && validImageFile(request.resource.data, 32 * 1024);
+      allow delete: if owner(uid);
+    }
+
+    // ---- Discovery -------------------------------------------------------
+    function listingPath(uid) { return /databases/$(database)/documents/publicProfiles/$(uid); }
+    function listed(uid) { return exists(listingPath(uid)); }
+    function listedAfter(uid) { return existsAfter(listingPath(uid)); }
+    function listing(uid) { return get(listingPath(uid)).data; }
+    // Listed members see listed members of the opposite gender, never themselves.
+    function canView(uid) {
+      return request.auth != null && request.auth.uid != uid
+        && listed(request.auth.uid) && listed(uid)
+        && listing(request.auth.uid).gender != listing(uid).gender
+        && !suspended(request.auth.uid) && !blockedEitherWay(request.auth.uid, uid);
+    }
+    function hasPhotoAccess(uid) {
+      return exists(/databases/$(database)/documents/photoAccess/$(uid)/items/$(request.auth.uid));
+    }
+    // A match also lets both members see each other's photos.
+    function matchedWith(uid) {
+      let me = request.auth.uid;
+      return exists(/databases/$(database)/documents/matches/$(me < uid ? me + '_' + uid : uid + '_' + me));
+    }
+    function canSeePhotos(uid) {
+      return canView(uid)
+        && (listing(uid).photosBlurred == false || hasPhotoAccess(uid) || matchedWith(uid));
+    }
+    // Every listing field is derived from the owner's records at write time:
+    // unchanged profile answers, age from the private birth date (year and
+    // month only), the current photo order, and the reviewer's decision.
+    function validListing(d, uid) {
+      let p = get(/databases/$(database)/documents/profiles/$(uid)).data;
+      let a = get(/databases/$(database)/documents/privateAccounts/$(uid)).data;
+      let photos = get(/databases/$(database)/documents/profilePhotos/$(uid)).data;
+      let v = /databases/$(database)/documents/verifications/$(uid);
+      return d.keys().hasAll(['schemaVersion','name','gender','nationality','residenceCountry','city','ethnicity','ethnicityOther','profession','professionOther','education','practice','marriageTimeline','relocation','maritalStatus','about','birthYearMonth','photoIds','photosBlurred','verified','updatedAt'])
+        && d.keys().hasOnly(['schemaVersion','name','gender','nationality','residenceCountry','city','ethnicity','ethnicityOther','profession','professionOther','education','practice','marriageTimeline','relocation','maritalStatus','about','birthYearMonth','photoIds','photosBlurred','verified','joinedAt','vip','updatedAt'])
+        && d.schemaVersion == 1
+        && d.diff(p).affectedKeys().hasOnly(['schemaVersion','onboardingComplete','createdAt','updatedAt','birthYearMonth','photoIds','photosBlurred','verified','joinedAt','vip'])
+        // Optional so listings written by older app versions stay valid.
+        && (!('joinedAt' in d) || d.joinedAt == p.createdAt)
+        // VIP members are shown first in Discover; the flag must be true now.
+        && (!('vip' in d) || d.vip == planActive(uid, ['vip']))
+        && d.birthYearMonth == a.birthDate.year() * 100 + a.birthDate.month()
+        && d.photoIds == photos.photoIds && d.photoIds.size() > 0
+        && d.photosBlurred == (photos.get('blurred', false) == true)
+        && d.verified == (exists(v) && get(v).data.status == 'verified')
+        && request.auth.token.email_verified == true
+        && !suspended(uid)
+        && d.updatedAt == request.time;
+    }
+    match /publicProfiles/{uid} {
+      allow get: if owner(uid) || canView(uid) || staffSees(uid);
+      // Queries must filter on the opposite gender for this rule to hold.
+      allow list: if moderates() || (request.auth != null && listed(request.auth.uid)
+        && resource.data.gender != listing(request.auth.uid).gender);
+      allow create, update: if owner(uid) && validListing(request.resource.data, uid);
+      allow delete: if owner(uid) || staffSees(uid);
+    }
+    // A viewer asks a woman who blurs her photos to see them.
+    match /photoRequests/{ownerId}/items/{viewerId} {
+      allow get: if owner(ownerId) || owner(viewerId);
+      allow list: if owner(ownerId);
+      allow create: if owner(viewerId) && canView(ownerId)
+        && listing(ownerId).photosBlurred == true && !hasPhotoAccess(ownerId)
+        && request.resource.data.keys().hasOnly(['createdAt'])
+        && request.resource.data.createdAt == request.time;
+      allow delete: if owner(ownerId) || owner(viewerId);
+    }
+    // Only the owner grants access; either side may remove it.
+    match /photoAccess/{ownerId}/items/{viewerId} {
+      allow get: if owner(ownerId) || owner(viewerId);
+      allow list: if owner(ownerId);
+      allow create: if owner(ownerId) && ownerId != viewerId
+        && request.resource.data.keys().hasOnly(['grantedAt'])
+        && request.resource.data.grantedAt == request.time;
+      allow delete: if owner(ownerId) || owner(viewerId);
+    }
+    // What the member is looking for in a spouse; private to them.
+    function validPreferences(d) {
+      return d.keys().hasAll(['schemaVersion','minAge','maxAge','countries','maritalStatuses','practices','updatedAt'])
+        && d.keys().hasOnly(['schemaVersion','minAge','maxAge','countries','maritalStatuses','practices','updatedAt'])
+        && d.schemaVersion == 1
+        && d.minAge is int && d.maxAge is int
+        && d.minAge >= 18 && d.maxAge <= 80 && d.minAge <= d.maxAge
+        && d.countries is list && d.countries.size() <= 10
+        && d.countries.join(',').matches('([A-Z]{2}(,[A-Z]{2})*)?')
+        && d.maritalStatuses is list
+        && d.maritalStatuses.hasOnly(['neverMarried','divorced','widowed'])
+        && d.practices is list
+        && d.practices.hasOnly(['strict','active','growing','cultural'])
+        && d.updatedAt == request.time;
+    }
+    match /partnerPreferences/{uid} {
+      allow get, delete: if owner(uid);
+      allow create, update: if owner(uid) && validPreferences(request.resource.data);
+    }
+    // ---- Memberships -------------------------------------------------------
+    // memberships/{uid}: Premium or VIP until expiresAt. Only administrators
+    // grant them for now; Google Play billing (verified on a server) later.
+    function planActive(uid, plans) {
+      let m = docPath('memberships', uid);
+      return exists(m) && get(m).data.plan in plans && get(m).data.expiresAt > request.time;
+    }
+    match /memberships/{uid} {
+      allow get: if owner(uid) || isStaff();
+      allow list: if hasRole(['admin']);
+      allow create, update: if hasRole(['admin'])
+        && request.resource.data.keys().hasAll(['plan','expiresAt','grantedBy','source','updatedAt'])
+        && request.resource.data.keys().hasOnly(['plan','expiresAt','grantedBy','source','updatedAt'])
+        && request.resource.data.plan in ['premium','vip']
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.grantedBy == request.auth.uid
+        && request.resource.data.source == 'admin'
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if hasRole(['admin']);
+    }
+    // ---- Interest and matches ----------------------------------------------
+    // likes/{from}_{to}: one member's interest in another they may see.
+    // Either member may remove it; ids are checked from the path so deleting
+    // a like that does not exist is allowed (e.g. in a block batch).
+    match /likes/{likeId} {
+      allow get, delete: if request.auth != null && request.auth.uid in likeId.split('_');
+      allow list: if request.auth != null
+        && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['from','to','createdAt'])
+        && request.resource.data.keys().hasOnly(['from','to','createdAt'])
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to is string
+        && likeId == request.resource.data.from + '_' + request.resource.data.to
+        && canView(request.resource.data.to)
+        && request.resource.data.createdAt == request.time;
+    }
+    // matches/{a}_{b} (sorted): only when both likes exist after the write.
+    function likeExistsAfter(from, to) {
+      return existsAfter(/databases/$(database)/documents/likes/$(from + '_' + to));
+    }
+    match /matches/{matchId} {
+      allow get, delete: if request.auth != null && request.auth.uid in matchId.split('_');
+      allow list: if request.auth != null && request.auth.uid in resource.data.users;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['users','createdAt'])
+        && request.resource.data.keys().hasOnly(['users','createdAt'])
+        && request.resource.data.users is list && request.resource.data.users.size() == 2
+        && request.auth.uid in request.resource.data.users
+        && request.resource.data.users[0] < request.resource.data.users[1]
+        && matchId == request.resource.data.users[0] + '_' + request.resource.data.users[1]
+        && likeExistsAfter(request.resource.data.users[0], request.resource.data.users[1])
+        && likeExistsAfter(request.resource.data.users[1], request.resource.data.users[0])
+        // At least one of the two has Premium or VIP (DEC-023).
+        && (planActive(request.resource.data.users[0], ['premium','vip'])
+          || planActive(request.resource.data.users[1], ['premium','vip']))
+        && request.resource.data.createdAt == request.time;
+    }
+    // ---- Wali (guardian) ---------------------------------------------------
+    // guardians/{uid}: a limited account that looks after members; it has no
+    // profile, so it can never list itself or browse Discover.
+    function docPath(collection, id) {
+      return /databases/$(database)/documents/$(collection)/$(id);
+    }
+    match /guardians/{uid} {
+      allow get: if owner(uid) || hasRole(['admin']);
+      allow create: if owner(uid) && !exists(docPath('profiles', uid))
+        && request.resource.data.keys().hasAll(['name','createdAt'])
+        && request.resource.data.keys().hasOnly(['name','createdAt'])
+        && text(request.resource.data.name, 1, 50)
+        && request.resource.data.createdAt == request.time;
+      allow delete: if owner(uid);
+    }
+    // waliInvites/{code}: knowing the code is what lets a guardian join.
+    match /waliInvites/{code} {
+      allow get: if request.auth != null;
+      allow list: if request.auth != null && resource.data.memberUid == request.auth.uid;
+      allow create: if code.matches('[A-HJKMNP-Z2-9]{8}')
+        && owner(request.resource.data.memberUid)
+        && !exists(docPath('walis', request.resource.data.memberUid))
+        && request.resource.data.keys().hasAll(['memberUid','memberName','createdAt'])
+        && request.resource.data.keys().hasOnly(['memberUid','memberName','createdAt'])
+        && request.resource.data.memberName == get(docPath('profiles', request.resource.data.memberUid)).data.name
+        && request.resource.data.createdAt == request.time;
+      // The member withdraws it, or the guardian uses it up when linking.
+      allow delete: if owner(resource.data.memberUid)
+        || (request.auth != null
+          && existsAfter(docPath('walis', resource.data.memberUid))
+          && getAfter(docPath('walis', resource.data.memberUid)).data.waliUid == request.auth.uid);
+    }
+    // walis/{memberUid}: the member's guardian, linked with a valid invite.
+    function waliOf(memberUid) {
+      return exists(docPath('walis', memberUid))
+        && get(docPath('walis', memberUid)).data.waliUid == request.auth.uid;
+    }
+    match /walis/{memberUid} {
+      allow get: if owner(memberUid) || waliOf(memberUid) || hasRole(['admin']);
+      allow list: if request.auth != null && resource.data.waliUid == request.auth.uid;
+      allow create: if request.auth != null && request.auth.uid != memberUid
+        && request.resource.data.keys().hasAll(['waliUid','waliName','memberName','inviteCode','linkedAt'])
+        && request.resource.data.keys().hasOnly(['waliUid','waliName','memberName','inviteCode','linkedAt'])
+        && request.resource.data.waliUid == request.auth.uid
+        && existsAfter(docPath('guardians', request.auth.uid))
+        && request.resource.data.waliName == getAfter(docPath('guardians', request.auth.uid)).data.name
+        && exists(docPath('waliInvites', request.resource.data.inviteCode))
+        && get(docPath('waliInvites', request.resource.data.inviteCode)).data.memberUid == memberUid
+        && get(docPath('waliInvites', request.resource.data.inviteCode)).data.memberName == request.resource.data.memberName
+        && request.time < get(docPath('waliInvites', request.resource.data.inviteCode)).data.createdAt + duration.value(7, 'd')
+        && !existsAfter(docPath('waliInvites', request.resource.data.inviteCode))
+        && request.resource.data.linkedAt == request.time;
+      allow delete: if owner(memberUid) || resource.data.waliUid == request.auth.uid;
+    }
+    // waliRequests/{memberUid}_{otherUid}: a match awaiting the member's
+    // guardian. The other member's details are copied from their listing and
+    // must match it exactly; photos are never included.
+    function sameCandidate(c, uid) {
+      let l = listing(uid);
+      return c.keys().hasOnly(['name','birthYearMonth','city','residenceCountry','profession','professionOther','education','practice','maritalStatus','about','verified'])
+        && c.name == l.name && c.birthYearMonth == l.birthYearMonth && c.city == l.city
+        && c.residenceCountry == l.residenceCountry && c.profession == l.profession
+        && c.professionOther == l.professionOther && c.education == l.education
+        && c.practice == l.practice && c.maritalStatus == l.maritalStatus
+        && c.about == l.about && c.verified == l.verified;
+    }
+    function matched(a, b) {
+      return exists(docPath('matches', a < b ? a + '_' + b : b + '_' + a));
+    }
+    match /waliRequests/{requestId} {
+      allow get: if request.auth != null
+        && (request.auth.uid in requestId.split('_')
+          || (resource != null && resource.data.waliUid == request.auth.uid));
+      allow list: if request.auth != null
+        && (resource.data.waliUid == request.auth.uid
+          || resource.data.memberUid == request.auth.uid
+          || resource.data.otherUid == request.auth.uid);
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['memberUid','otherUid','waliUid','status','candidate','createdAt'])
+        && request.resource.data.keys().hasOnly(['memberUid','otherUid','waliUid','status','candidate','createdAt'])
+        && owner(request.resource.data.memberUid)
+        && requestId == request.resource.data.memberUid + '_' + request.resource.data.otherUid
+        && matched(request.resource.data.memberUid, request.resource.data.otherUid)
+        && exists(docPath('walis', request.resource.data.memberUid))
+        && request.resource.data.waliUid == get(docPath('walis', request.resource.data.memberUid)).data.waliUid
+        && request.resource.data.status == 'pending'
+        && sameCandidate(request.resource.data.candidate, request.resource.data.otherUid)
+        && request.resource.data.createdAt == request.time;
+      // Only the current guardian decides.
+      allow update: if request.auth != null
+        && resource.data.waliUid == request.auth.uid
+        && waliOf(resource.data.memberUid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','decidedAt'])
+        && request.resource.data.status in ['approved','declined']
+        && request.resource.data.decidedAt == request.time;
+      // Either member removes it (unmatch, block, removing the guardian).
+      allow delete: if request.auth != null && request.auth.uid in requestId.split('_');
+    }
+    // ---- Messaging ---------------------------------------------------------
+    // A member needs their Wali's approval when they have a Wali, and sisters
+    // always need one (DEC-020).
+    function approvedFor(u, other) {
+      let needsWali = exists(docPath('walis', u))
+        || get(docPath('profiles', u)).data.gender == 'female';
+      let request = docPath('waliRequests', u + '_' + other);
+      return !needsWali || (exists(request) && get(request).data.status == 'approved');
+    }
+    // chats/{a}_{b} (the match id): messaging is open while the match exists,
+    // both sides are approved and the sender is not suspended.
+    function memberOf(chatId) {
+      return request.auth != null && request.auth.uid in chatId.split('_');
+    }
+    function canMessage(chatId) {
+      let users = chatId.split('_');
+      return memberOf(chatId)
+        && exists(docPath('matches', chatId))
+        && !suspended(request.auth.uid)
+        && approvedFor(users[0], users[1]) && approvedFor(users[1], users[0]);
+    }
+    // Only the reader's own read time may change, and only to now.
+    function onlyMyReadTime() {
+      return request.resource.data.readBy.diff(resource.data.readBy).affectedKeys().hasOnly([request.auth.uid])
+        && request.resource.data.readBy[request.auth.uid] == request.time;
+    }
+    match /chats/{chatId} {
+      allow get, delete: if memberOf(chatId);
+      allow list: if request.auth != null && request.auth.uid in resource.data.users;
+      allow create: if canMessage(chatId)
+        && request.resource.data.keys().hasAll(['users','lastText','lastFrom','lastAt','readBy'])
+        && request.resource.data.keys().hasOnly(['users','lastText','lastFrom','lastAt','readBy'])
+        && request.resource.data.users == chatId.split('_')
+        && request.resource.data.lastText is string
+        && request.resource.data.lastText.size() >= 1 && request.resource.data.lastText.size() <= 140
+        && request.resource.data.lastFrom == request.auth.uid
+        && request.resource.data.lastAt == request.time
+        && request.resource.data.readBy.keys().hasOnly([request.auth.uid])
+        && request.resource.data.readBy[request.auth.uid] == request.time;
+      allow update: if memberOf(chatId) && (
+        // A new message: the summary moves on with it.
+        (canMessage(chatId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastText','lastFrom','lastAt','readBy'])
+          && request.resource.data.lastText is string
+          && request.resource.data.lastText.size() >= 1 && request.resource.data.lastText.size() <= 140
+          && request.resource.data.lastFrom == request.auth.uid
+          && request.resource.data.lastAt == request.time
+          && onlyMyReadTime())
+        // Reading: only the reader's time.
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readBy'])
+          && onlyMyReadTime()));
+      match /messages/{messageId} {
+        allow read: if memberOf(chatId) && exists(docPath('matches', chatId));
+        allow create: if canMessage(chatId)
+          && request.resource.data.keys().hasAll(['from','text','sentAt'])
+          && request.resource.data.keys().hasOnly(['from','text','sentAt'])
+          && request.resource.data.from == request.auth.uid
+          && text(request.resource.data.text, 1, 1000)
+          && request.resource.data.sentAt == request.time
+          // The conversation summary is written in the same batch.
+          && getAfter(docPath('chats', chatId)).data.lastAt == request.time;
+        // Either member clears the conversation when the match ends.
+        allow delete: if memberOf(chatId);
+      }
+    }
+    // ---- Moderation --------------------------------------------------------
+    match /admins/{uid} {
+      allow get: if owner(uid) || hasRole(['admin']);
+      allow list: if hasRole(['admin']);
+      allow write: if false;
+    }
+    // Set by moderators; the member's app shows a locked screen when suspended.
+    match /accountStatus/{uid} {
+      allow get: if owner(uid) || isStaff();
+      allow list: if moderates();
+      allow create, update: if moderates()
+        && request.resource.data.keys().hasOnly(['status','reason','updatedAt','updatedBy'])
+        && request.resource.data.status in ['active','suspended']
+        && request.resource.data.reason is string && request.resource.data.reason.size() <= 300
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.updatedBy == request.auth.uid;
+    }
+    // Members report profiles they can see; only moderators read reports.
+    match /reports/{reportId} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['reporterUid','reportedUid','reason','note','status','createdAt'])
+        && request.resource.data.reporterUid == request.auth.uid
+        && canView(request.resource.data.reportedUid)
+        && request.resource.data.reason in ['fakeProfile','inappropriatePhotos','harassment','scam','underage','notSerious','other']
+        && request.resource.data.note is string && request.resource.data.note.size() <= 500
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time;
+      allow get, list: if moderates();
+      allow update: if moderates()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','resolution','resolvedAt','resolvedBy'])
+        && request.resource.data.status in ['resolved','dismissed']
+        && request.resource.data.resolution is string && request.resource.data.resolution.size() <= 300
+        && request.resource.data.resolvedAt == request.time
+        && request.resource.data.resolvedBy == request.auth.uid;
+    }
+    // blocks/{blocker_blocked}: blocked members never see each other again.
+    match /blocks/{blockId} {
+      allow get, list: if request.auth != null
+        && (resource.data.blocker == request.auth.uid || resource.data.blocked == request.auth.uid
+          || moderates());
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['blocker','blocked','blockedName','createdAt'])
+        && request.resource.data.blocker == request.auth.uid
+        && request.resource.data.blocked is string && request.resource.data.blocked != request.auth.uid
+        && blockId == request.resource.data.blocker + '_' + request.resource.data.blocked
+        && text(request.resource.data.blockedName, 1, 50)
+        && request.resource.data.createdAt == request.time;
+      allow delete: if request.auth != null && resource.data.blocker == request.auth.uid;
+    }
+    // No other administration access from clients.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

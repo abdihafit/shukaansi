@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1070920046573",
+    "project_id": "kumee-development",
+    "storage_bucket": "kumee-development.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070920046573:android:4158f7418fc72d59c279e4",
+        "android_client_info": {
+          "package_name": "com.kumee.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAMMqJnd4B_hbMP-p57wWn9TfmCQ3gCFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
